@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <png.h>
 #include <stdio.h>
 struct SDL_SavePNG
@@ -57,17 +57,46 @@ struct SDL_SavePNG
 		row_pointers = (png_byte **) png_malloc(png_ptr, bitmap->h * sizeof(png_byte *));
 		for (y = 0; y < bitmap->h; ++y)
 		{
-			png_byte *row =
-				(png_byte *) png_malloc(png_ptr, sizeof(png_byte) * bitmap->w * pixel_size);
-			row_pointers[y] = row;
+			png_byte *p =
+				(png_byte *) png_malloc(png_ptr, sizeof(png_byte) * bitmap->w * pixel_size);//row
+			row_pointers[y] = p;
 			for (x = 0; x < bitmap->w; ++x)
 			{
-				Uint8 red, green, blue;
-				Uint32 *pixmem = (Uint32 *) bitmap->pixels + y * bitmap->w + x;
-				SDL_GetRGB(*pixmem, bitmap->format, &red, &green, &blue);
-				*row++ = red;
-				*row++ = green;
-				*row++ = blue;
+				/* Uint8 red, green, blue; Uint32 *pixmem = (Uint32 *)
+				   bitmap->pixels + y * bitmap->w + x; SDL_GetRGB(*pixmem,
+				   bitmap->format, &red, &green, &blue); *row++ = red; *row++
+				   = green; *row++ = blue; */
+				int bpp = bitmap->format->BytesPerPixel;
+				Uint8 *pix = (Uint8 *) bitmap->pixels + y * bitmap->pitch + x * bpp;
+				if (bpp == 1)
+				{
+					*(p++) = pix[0];
+					*(p++) = pix[0];
+					*(p++) = pix[0];
+				}
+				else if (bpp == 3)
+				{
+					if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+					{
+						*(p++) = pix[0];
+						*(p++) = pix[1];
+						*(p++) = pix[2];
+					}
+					else
+					{
+						*(p++) = pix[2];
+						*(p++) = pix[1];
+						*(p++) = pix[0];
+					}
+				}
+				else if (bpp == 4)
+				{
+					Uint8 r, g, b;
+					SDL_GetRGB(*(Uint32 *) pix, bitmap->format, &r, &g, &b);
+					*(p++) = r;
+					*(p++) = g;
+					*(p++) = b;
+				}
 			}
 		}
 		/* Write the image data to "fp". */
@@ -93,8 +122,8 @@ struct SDL_SavePNG
 			SDL_UnlockSurface(bitmap);
 		return status;
 	}
-	int save(SDL_Surface *s,const char* path)
+	int save(SDL_Surface * s, const char *path)
 	{
-		return SDL_SavePNG_RGB(s,path);
+		return SDL_SavePNG_RGB(s, path);
 	}
 };

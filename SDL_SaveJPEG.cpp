@@ -42,7 +42,7 @@ struct SaveJPEG
 		jpeg_destroy_compress(&cinfo);
 		return 0;
 	}
-	int save(const char *f, SDL_Surface * s)
+	int save( SDL_Surface * s,const char *f)
 	{
 		if (SDL_MUSTLOCK(s))
 			if (SDL_LockSurface(s) < 0)
@@ -57,7 +57,7 @@ struct SaveJPEG
 		for (i = 0; i < s->h; i++)
 			for (j = 0; j < s->w; j++)
 			{
-				register int bpp = s->format->BytesPerPixel;
+				int bpp = s->format->BytesPerPixel;
 				if (bpp == 1)
 				{
 					Uint8 *pix = (Uint8 *) s->pixels + i * s->pitch + j * bpp;
@@ -112,7 +112,7 @@ SDL_Surface *bmp = SDL_LoadBMP("/sdcard/lena.bmp");
 		SDL_SetVideoMode(bmp->w, bmp->h, bmp->format->BitsPerPixel, SDL_SWSURFACE | SDL_DOUBLEBUF);
 	if (s == NULL)
 		return -1;
-	freopen("sdl.log", "w", stdout);
+//	freopen("sdl.log", "w", stdout);
 //	printf("BMP BitsPerPixel=%d\n", bmp->format->BitsPerPixel);
 
 print_surface_info(bmp,w);
@@ -123,14 +123,11 @@ print_surface_info(bmp,pitch);
 //print_surface_info(s,w);
 //print_surface_info(s,h);
 //print_surface_info(s,format->BitsPerPixel);
-
-	// SDL_Rect r={0,0,bmp->w,bmp->h};
 	SDL_BlitSurface(bmp, NULL, s, NULL);
 	SDL_Flip(s);
 	clock_t t=clock();
-	worker.save("/sdcard/lena.jpg", s);
+	worker.save(s,"/sdcard/lena.jpg");
 	printf("jpeg save time: %ld\n",clock()-t);
-	// SDL_Delay(2000);
 	fflush(stdout);
 	fclose(stdout);
 	SDL_Quit();
