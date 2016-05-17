@@ -94,7 +94,7 @@ struct SDL_SaveJPEG
 			}
 		if (SDL_MUSTLOCK(s))
 			SDL_UnlockSurface(s);
-		write_JPEG_file(f, 90);
+		write_JPEG_file(f, 100);
 		free(image_buffer);
 		return 0;
 	}
