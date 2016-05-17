@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <jpeglib.h>
-struct SaveJPEG
+struct SDL_SaveJPEG
 {
 	JSAMPLE *image_buffer;
 	int image_height;
@@ -94,9 +94,8 @@ struct SaveJPEG
 			}
 		if (SDL_MUSTLOCK(s))
 			SDL_UnlockSurface(s);
-		write_JPEG_file(f, 100);
+		write_JPEG_file(f, 90);
 		free(image_buffer);
 		return 0;
 	}
 };
-

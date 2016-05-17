@@ -1,6 +1,6 @@
 #include <SDL/SDL.h>
 #include "SDL_SaveJPEG.cpp"
-SaveJPEG worker;
+SDL_SaveJPEG worker;
 #define print_surface_info(surface,info) printf(#surface"->"#info"=%d\n",surface->info);
 int main()
 {
