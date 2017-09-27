@@ -3,11 +3,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <jpeglib.h>
-struct SDL_SaveJPEG
+class SDL_SaveJPEG
 {
-	JSAMPLE *image_buffer;
+  private:
+	JSAMPLE * image_buffer;
 	int image_height;
 	int image_width;
+  public:
 	int write_JPEG_file(const char *filename, int quality)
 	{
 		struct jpeg_compress_struct cinfo;
@@ -42,7 +44,7 @@ struct SDL_SaveJPEG
 		jpeg_destroy_compress(&cinfo);
 		return 0;
 	}
-	int save( SDL_Surface * s,const char *f)
+	int save(SDL_Surface * s, const char *f)
 	{
 		if (SDL_MUSTLOCK(s))
 			if (SDL_LockSurface(s) < 0)
@@ -50,7 +52,9 @@ struct SDL_SaveJPEG
 		int i, j;
 		this->image_width = s->w;
 		this->image_height = s->h;
-		this->image_buffer = (JSAMPLE *) malloc(image_width * image_height * 3 * sizeof(JSAMPLE));
+		this->image_buffer =
+			(JSAMPLE *) malloc(image_width * image_height * 3 *
+							   sizeof(JSAMPLE));
 		// assert(image_buffer);
 
 		JSAMPLE *p = this->image_buffer;
@@ -85,7 +89,8 @@ struct SDL_SaveJPEG
 				{
 
 					Uint8 r, g, b;
-					Uint32 *pix = (Uint32 *) s->pixels + i * this->image_width + j;
+					Uint32 *pix =
+						(Uint32 *) s->pixels + i * this->image_width + j;
 					SDL_GetRGB(*pix, s->format, &r, &g, &b);
 					*(p++) = r;
 					*(p++) = g;
