@@ -5,7 +5,7 @@ SDL_SavePNG worker;
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO);
-SDL_Surface *bmp = SDL_LoadBMP("/sdcard/lena.bmp");
+SDL_Surface *bmp = SDL_LoadBMP("lena.bmp");
 	if (bmp == NULL)
 		return -1;
 	SDL_Surface *s =
