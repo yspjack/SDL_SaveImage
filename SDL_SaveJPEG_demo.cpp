@@ -34,3 +34,4 @@ print_surface_info(bmp,pitch);
 	SDL_Quit();
 	return 0;
 }
+#undef print_surface_info
